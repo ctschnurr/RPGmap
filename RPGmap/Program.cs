@@ -24,51 +24,45 @@ namespace RPGmap
             {'`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`','`'},
         };
 
+        static int mapHeight = map.GetLength(0);
+        static int mapWidth = map.GetLength(1);
+
         static void Main(string[] args)
 
         {
-            Console.SetWindowSize(92, 39);
+            Console.SetWindowSize((mapWidth * 3) + 2, (mapHeight * 3) + 3);
             Console.SetBufferSize(Console.WindowWidth, Console.WindowHeight);
 
             Console.CursorVisible = false;
 
             DisplayMap();
-
             Console.ReadKey(true);
             Console.Clear();
 
             DisplayMap(1);
-
             Console.ReadKey(true);
             Console.Clear();
 
             DisplayMap(2);
-
             Console.ReadKey(true);
             Console.Clear();
 
             DisplayMap(3);
-
             Console.ReadKey(true);
-
-            //  while (gameOver == false)
-            //  {
-            //      //PlayerDraw(x, y);
-            //      //PlayerUpdate();
-            //  }
         }
 
         static void DisplayMap()
         {
 
-            for (int mapX = 0; mapX < 12; mapX++)
+            for (int mapX = 0; mapX < mapHeight; mapX++)
             {
                 Console.SetCursorPosition(0, mapX);
-                for (int mapY = 0; mapY < 30; mapY++)
+                for (int mapY = 0; mapY < mapWidth; mapY++)
                 {
                     Console.Write(map[mapX, mapY]);
                 }
-
+                Console.WriteLine();
+                Console.WriteLine("Raw Map Data");
             }
 
         }
@@ -87,13 +81,13 @@ namespace RPGmap
             switch (scale)
             {
                 case 1:
-                    rowNum = 12;
-                    colNum = 30;
+                    rowNum = mapHeight;
+                    colNum = mapWidth;
                     break;
 
                 case 2:
-                    rowNum = 6;
-                    colNum = 15;
+                    rowNum = mapHeight / 2;
+                    colNum = mapWidth / 2;
                     break;
 
                 case 3:
@@ -107,9 +101,9 @@ namespace RPGmap
 
             int drawH = mapCol;
 
-            for (int column = 0; column < 12; column++)
+            for (int column = 0; column < mapHeight; column++)
             {
-                for (int row = 0; row < 30; row++)
+                for (int row = 0; row < mapWidth; row++)
                 {
                     drawV = mapRow;
                     for (int v = 0; v < scale; v++)
@@ -119,38 +113,84 @@ namespace RPGmap
                         Console.SetCursorPosition(drawH, drawV);
                         for (int h = 0; h < scale; h++)
                         {
-                            Console.Write(tile);
+
+                            switch(tile)
+                            {
+                                case '^':
+
+                                    Random rand = new Random();
+                                    int diceRoll = rand.Next(3);
+
+                                    if (diceRoll == 2)
+                                    {
+                                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                                    }
+
+                                    else if (diceRoll != 2)
+                                    {
+                                        Console.ForegroundColor = ConsoleColor.White;
+                                    }
+
+                                    Console.BackgroundColor = ConsoleColor.Gray;
+                                    Console.Write(tile);
+                                    break;
+
+                                case '`':
+                                    Console.BackgroundColor = ConsoleColor.Green;
+                                    Console.ForegroundColor = ConsoleColor.DarkGreen;
+                                    Console.Write(tile);
+                                    break;
+
+                                case '~':
+                                    Console.BackgroundColor = ConsoleColor.Blue;
+                                    Console.ForegroundColor = ConsoleColor.DarkBlue;
+                                    Console.Write(tile);
+                                    break;
+
+                                case '*':
+                                    Console.BackgroundColor = ConsoleColor.Green;
+                                    Console.ForegroundColor = ConsoleColor.DarkGreen;
+                                    Console.Write(tile);
+                                    break;
+
+                                default:
+                                    Console.Write(tile);
+                                    break;
+
+                            }
+
+                            Console.ResetColor();                            
                         }
                         drawV = drawV + 1;
                     }
                     mapH = mapH + 1;
                     drawH = drawH + scale;
-                    
+
 
                 }
                 mapRow = mapRow + scale;
                 drawH = mapCol;
-                
-                mapV = mapV + 1;
-                mapH = 0;          
-            }
 
+                mapV = mapV + 1;
+                mapH = 0;
+            }
+        
             Console.SetCursorPosition(colNum, rowNum);
 
             Console.Write("╔");
 
-            for (int x = 0; x < (30 * scale); x++)
+            for (int x = 0; x < (mapWidth * scale); x++)
             {
                 Console.Write("═");
             }
 
             Console.WriteLine("╗");
 
-            for (int y = 1; y <= (12 * scale); y++)
+            for (int y = 1; y <= (mapHeight * scale); y++)
             {
                 Console.SetCursorPosition(colNum, rowNum + y);
                 Console.Write("║");
-                Console.SetCursorPosition(colNum + ((30 * scale) + 1), rowNum + y);
+                Console.SetCursorPosition(colNum + ((mapWidth * scale) + 1), rowNum + y);
                 Console.Write("║");
             }
 
@@ -158,7 +198,7 @@ namespace RPGmap
 
             Console.Write("╚");
 
-            for (int x = 0; x < (30 * scale); x++)
+            for (int x = 0; x < (mapWidth * scale); x++)
             {
                 Console.Write("═");
             }
